@@ -1,15 +1,14 @@
+import { useAuthStore } from "@/stores/auth";
+
 async function http<T>(path: string, config: RequestInit): Promise<T> {
+  config.headers = {
+    ...config.headers,
+    ...authHeader(path),
+  };
   const request = new Request(path, config);
   const response = await fetch(request);
 
-  if (!response.ok) {
-    const error = new Error("Error requesting server");
-    error.name = String(response.status);
-    error.message = response.statusText;
-    throw error;
-  }
-
-  return response.json().catch(() => ({}));
+  return handleResponse(response);
 }
 
 export async function get<T>(path: string, config?: RequestInit): Promise<T> {
@@ -29,4 +28,29 @@ export async function post<T, U>(
     ...config,
   };
   return await http<U>(path, init);
+}
+
+function authHeader(url: string) {
+  const { user } = useAuthStore();
+  const isLoggedIn = !!user?.access_token;
+  const isApiUrl = url.startsWith(import.meta.env.VITE_API_URL);
+  if (isLoggedIn && isApiUrl) {
+    return { Authorization: `Bearer ${user.access_token}` };
+  } else {
+    return {};
+  }
+}
+
+function handleResponse(response) {
+  return response.json().then((data) => {
+    if (!response.ok) {
+      const { user, logout } = useAuthStore();
+      if ([401, 403].includes(response.status) && user) {
+        logout();
+      }
+      const error = (data && data.message) || response.statusText;
+      return Promise.reject(error);
+    }
+    return data;
+  });
 }

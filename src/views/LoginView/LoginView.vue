@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useAuthStore } from "@/stores";
+import { useAuthStore } from "@/stores/auth";
 
 const username = ref("");
 const password = ref("");
 
 function signIn() {
-  console.log("sign in", username.value, password.value);
   const authStore = useAuthStore();
   authStore.login(username.value, password.value);
 }

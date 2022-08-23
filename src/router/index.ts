@@ -1,7 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import { useAuthStore } from "@/stores";
-import Dashboard from "@/views/Dashboard/Dashboard.vue";
-import Login from "@/views/Login/Login.vue";
+import { useAuthStore } from "@/stores/auth";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,12 +8,18 @@ const router = createRouter({
     {
       path: "/",
       name: "dashboard",
-      component: Dashboard,
+      component: () => import("@/views/DashboardView/DashboardView.vue"),
+      meta: {
+        layout: "DashboardLayout",
+      },
     },
     {
       path: "/login",
       name: "login",
-      component: Login,
+      component: () => import("@/views/LoginView/LoginView.vue"),
+      meta: {
+        layout: "EmptyLayout",
+      },
     },
   ],
 });

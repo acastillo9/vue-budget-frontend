@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import router from "@/router";
-import * as fetch from "@/helpers";
+import * as fetch from "@/helpers/fetch";
 
 const baseUrl = `${import.meta.env.VITE_API_URL}/auth`;
 
