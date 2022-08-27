@@ -10,13 +10,14 @@ import {
   faBars,
   faArrowRight,
   faUser,
+  faGaugeHigh,
+  faArrowRightArrowLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "bootstrap";
 import "@/assets/main.scss";
 
-library.add(faBars, faArrowRight, faUser);
+library.add(faBars, faArrowRight, faUser, faGaugeHigh, faArrowRightArrowLeft);
 
 const app = createApp(App);
 

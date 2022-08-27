@@ -4,14 +4,18 @@ import { useAuthStore } from "@/stores/auth";
 import { me } from "@/api/usersApi";
 
 const sidebarCollapsed = ref(false);
+const isSidebarCollapsed = ref(false);
 const sidebarClosed = ref(true);
-const user = ref(null);
+const user = ref<unknown>(null);
 
-function collapseSidebar() {
-  sidebarCollapsed.value = !sidebarCollapsed.value;
+function mouseEnterSidebar() {
+  isSidebarCollapsed.value = sidebarCollapsed.value;
+  sidebarCollapsed.value = false;
 }
-function closeSidebar() {
-  sidebarClosed.value = !sidebarClosed.value;
+function mouseLeaveSidebar() {
+  if (isSidebarCollapsed.value) {
+    sidebarCollapsed.value = true;
+  }
 }
 function logout() {
   const authStore = useAuthStore();
@@ -30,12 +34,45 @@ findUser();
       { collapsed: sidebarCollapsed, closed: sidebarClosed },
     ]"
   >
-    <div class="overlay" @click="closeSidebar"></div>
-    <div class="sidebar vh-100">
+    <div class="overlay" @click="sidebarClosed = !sidebarClosed"></div>
+    <div
+      class="sidebar vh-100"
+      @mouseenter="mouseEnterSidebar"
+      @mouseleave="mouseLeaveSidebar"
+    >
       <div class="pt-4 d-flex justify-content-center">
         <img class="logo-sm" src="@/assets/images/logo-sm.png" width="25" />
         <img class="logo-lg" src="@/assets/images/logo-lg.png" width="200" />
       </div>
+      <br />
+      <ul class="nav flex-column">
+        <li class="nav-item">
+          <RouterLink
+            class="nav-link d-flex align-items-center"
+            aria-current="page"
+            to="/dashboard"
+          >
+            <font-awesome-icon
+              icon="fa-solid fa-gauge-high"
+              class="nav-link-icon"
+            />
+            <span class="nav-link-text">Dashboard</span>
+          </RouterLink>
+        </li>
+        <li class="nav-item">
+          <RouterLink
+            class="nav-link d-flex align-items-center"
+            aria-current="page"
+            to="/transactions"
+          >
+            <font-awesome-icon
+              icon="fa-solid fa-arrow-right-arrow-left"
+              class="nav-link-icon"
+            />
+            <span class="nav-link-text">Transactions</span>
+          </RouterLink>
+        </li>
+      </ul>
     </div>
     <div class="content vh-100 flex-grow-1">
       <header>
@@ -43,7 +80,7 @@ findUser();
           <div class="container-fluid">
             <button
               class="btn btn-collapse-sidebar border-0"
-              @click="collapseSidebar"
+              @click="sidebarCollapsed = !sidebarCollapsed"
             >
               <font-awesome-icon
                 v-if="sidebarCollapsed"
@@ -54,7 +91,7 @@ findUser();
             </button>
             <button
               class="btn btn-close-sidebar border-0"
-              @click="closeSidebar"
+              @click="sidebarClosed = !sidebarClosed"
             >
               <font-awesome-icon icon="fa-solid fa-bars" size="lg" />
             </button>
@@ -97,6 +134,24 @@ findUser();
     .logo-sm {
       display: none;
     }
+
+    .nav {
+      .nav-item {
+        .nav-link {
+          color: #c8c9cf;
+
+          &.active,
+          &:hover {
+            color: #ffffff;
+          }
+
+          .nav-link-icon {
+            font-size: 18px;
+            margin-right: 0.5rem;
+          }
+        }
+      }
+    }
   }
 
   .content {
@@ -123,8 +178,12 @@ findUser();
   }
 
   &.collapsed {
+    padding-left: 70px;
+
     .sidebar {
       width: 70px;
+      position: absolute;
+      left: 0;
 
       .logo-lg {
         display: none;
@@ -133,12 +192,30 @@ findUser();
       .logo-sm {
         display: block;
       }
+
+      .nav {
+        .nav-item {
+          .nav-link {
+            justify-content: center;
+
+            .nav-link-icon {
+              font-size: 22px;
+              margin-right: 0;
+            }
+            .nav-link-text {
+              display: none;
+            }
+          }
+        }
+      }
     }
   }
 }
 
 @include media-breakpoint-down(md) {
   .sidebar-wrapper {
+    padding-left: 0;
+
     .overlay {
       position: absolute;
       width: 100vw;
@@ -170,6 +247,8 @@ findUser();
     }
 
     &.collapsed {
+      padding-left: 0;
+
       .sidebar {
         width: 250px;
 
@@ -179,6 +258,22 @@ findUser();
 
         .logo-sm {
           display: none;
+        }
+
+        .nav {
+          .nav-item {
+            .nav-link {
+              justify-content: start;
+
+              .nav-link-icon {
+                font-size: 18px;
+                margin-right: 0.5rem;
+              }
+              .nav-link-text {
+                display: block;
+              }
+            }
+          }
         }
       }
     }

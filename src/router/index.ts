@@ -6,8 +6,9 @@ const router = createRouter({
   linkActiveClass: "active",
   routes: [
     {
-      path: "/",
+      path: "/dashboard",
       name: "dashboard",
+      alias: "/",
       component: () => import("@/views/DashboardView/DashboardView.vue"),
       meta: {
         layout: "DashboardLayout",
@@ -19,6 +20,14 @@ const router = createRouter({
       component: () => import("@/views/LoginView/LoginView.vue"),
       meta: {
         layout: "EmptyLayout",
+      },
+    },
+    {
+      path: "/transactions",
+      name: "transactions",
+      component: () => import("@/views/TransactionsView/TransactionsView.vue"),
+      meta: {
+        layout: "DashboardLayout",
       },
     },
   ],
