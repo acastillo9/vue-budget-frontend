@@ -30,6 +30,14 @@ export async function post<T, U>(
   return await http<U>(path, init);
 }
 
+export async function remove(
+  path: string,
+  config?: RequestInit
+): Promise<void> {
+  const init = { method: "delete", ...config };
+  return await http<void>(path, init);
+}
+
 function authHeader(url: string) {
   const { user } = useAuthStore();
   const isLoggedIn = !!user?.access_token;
@@ -41,8 +49,10 @@ function authHeader(url: string) {
   }
 }
 
-function handleResponse(response) {
-  return response.json().then((data) => {
+async function handleResponse(response: Response) {
+  return response.text().then((text: string) => {
+    const data = text && JSON.parse(text);
+
     if (!response.ok) {
       const { user, logout } = useAuthStore();
       if ([401, 403].includes(response.status) && user) {

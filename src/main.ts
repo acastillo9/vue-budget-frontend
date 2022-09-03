@@ -12,12 +12,26 @@ import {
   faUser,
   faGaugeHigh,
   faArrowRightArrowLeft,
+  faPlus,
+  faMinus,
+  faPen,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 
 import "bootstrap";
 import "@/assets/main.scss";
 
-library.add(faBars, faArrowRight, faUser, faGaugeHigh, faArrowRightArrowLeft);
+library.add(
+  faBars,
+  faArrowRight,
+  faUser,
+  faGaugeHigh,
+  faArrowRightArrowLeft,
+  faPlus,
+  faMinus,
+  faPen,
+  faTrash
+);
 
 const app = createApp(App);
 

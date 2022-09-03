@@ -1,29 +1,24 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useAuthStore } from "@/stores/auth";
-import { me } from "@/api/usersApi";
+import { me } from "@/api/users/users.api";
+import type User from "@/api/users/user";
 
 const sidebarCollapsed = ref(false);
-const isSidebarCollapsed = ref(false);
-const sidebarClosed = ref(true);
-const user = ref<unknown>(null);
+const sidebarCollapsedHover = ref(false);
+const sidebarMobileOpened = ref(false);
 
-function mouseEnterSidebar() {
-  isSidebarCollapsed.value = sidebarCollapsed.value;
-  sidebarCollapsed.value = false;
-}
-function mouseLeaveSidebar() {
-  if (isSidebarCollapsed.value) {
-    sidebarCollapsed.value = true;
-  }
-}
+const user = ref<User | null>(null);
+
 function logout() {
   const authStore = useAuthStore();
   authStore.logout();
 }
+
 async function findUser() {
-  user.value = await me();
+  user.value = (await me()) as User;
 }
+
 findUser();
 </script>
 
@@ -31,14 +26,18 @@ findUser();
   <div
     :class="[
       'vw-100 vh-100 d-flex sidebar-wrapper',
-      { collapsed: sidebarCollapsed, closed: sidebarClosed },
+      {
+        collapsed: sidebarCollapsed,
+        'full-width': sidebarCollapsedHover,
+        'full-width-mobile': sidebarMobileOpened,
+      },
     ]"
   >
-    <div class="overlay" @click="sidebarClosed = !sidebarClosed"></div>
+    <div class="overlay" @click="() => (sidebarMobileOpened = false)"></div>
     <div
       class="sidebar vh-100"
-      @mouseenter="mouseEnterSidebar"
-      @mouseleave="mouseLeaveSidebar"
+      @mouseenter="() => (sidebarCollapsedHover = true)"
+      @mouseleave="() => (sidebarCollapsedHover = false)"
     >
       <div class="pt-4 d-flex justify-content-center">
         <img class="logo-sm" src="@/assets/images/logo-sm.png" width="25" />
@@ -91,7 +90,7 @@ findUser();
             </button>
             <button
               class="btn btn-close-sidebar border-0"
-              @click="sidebarClosed = !sidebarClosed"
+              @click="sidebarMobileOpened = !sidebarMobileOpened"
             >
               <font-awesome-icon icon="fa-solid fa-bars" size="lg" />
             </button>
@@ -104,8 +103,10 @@ findUser();
               >
                 <font-awesome-icon icon="fa-solid fa-user" class="me-2" />
                 <div class="me-1">
-                  <p class="m-0 text-start lh-1">Andrés Castillo</p>
-                  <p class="m-0 text-start lh-1 text-muted">acastillo</p>
+                  <p class="m-0 text-start lh-1">{{ user.name }}</p>
+                  <p class="m-0 text-start lh-1 text-muted">
+                    {{ user.username }}
+                  </p>
                 </div>
               </button>
               <ul class="dropdown-menu">
@@ -128,8 +129,12 @@ findUser();
     background-color: #273469;
     box-shadow: 2px 0px 4px #30343f20;
     z-index: 1;
-    width: 250px;
     transition: all 0.1s ease-out;
+    width: 250px;
+
+    .logo-lg {
+      display: block;
+    }
 
     .logo-sm {
       display: none;
@@ -139,6 +144,7 @@ findUser();
       .nav-item {
         .nav-link {
           color: #c8c9cf;
+          justify-content: start;
 
           &.active,
           &:hover {
@@ -148,6 +154,9 @@ findUser();
           .nav-link-icon {
             font-size: 18px;
             margin-right: 0.5rem;
+          }
+          .nav-link-text {
+            display: block;
           }
         }
       }
@@ -210,10 +219,42 @@ findUser();
       }
     }
   }
+
+  &.full-width {
+    .sidebar {
+      width: 250px !important;
+
+      .logo-lg {
+        display: block;
+      }
+
+      .logo-sm {
+        display: none;
+      }
+
+      .nav {
+        .nav-item {
+          .nav-link {
+            justify-content: start;
+
+            .nav-link-icon {
+              font-size: 18px;
+              margin-right: 0.5rem;
+            }
+            .nav-link-text {
+              display: block;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 @include media-breakpoint-down(md) {
-  .sidebar-wrapper {
+  .sidebar-wrapper,
+  .sidebar-wrapper.collapsed,
+  .sidebar-wrapper.full-width {
     padding-left: 0;
 
     .overlay {
@@ -222,14 +263,36 @@ findUser();
       height: 100vh;
       background-color: #00000040;
       z-index: 1;
+      display: none;
     }
 
     .sidebar {
       position: absolute;
-      left: 0;
+      width: 0;
+      overflow-x: hidden;
 
       .logo-lg {
         display: block;
+      }
+
+      .logo-sm {
+        display: none;
+      }
+
+      .nav {
+        .nav-item {
+          .nav-link {
+            justify-content: start;
+
+            .nav-link-icon {
+              font-size: 18px;
+              margin-right: 0.5rem;
+            }
+            .nav-link-text {
+              display: block;
+            }
+          }
+        }
       }
     }
 
@@ -246,11 +309,9 @@ findUser();
       }
     }
 
-    &.collapsed {
-      padding-left: 0;
-
+    &.full-width-mobile {
       .sidebar {
-        width: 250px;
+        width: 250px !important;
 
         .logo-lg {
           display: block;
@@ -276,15 +337,9 @@ findUser();
           }
         }
       }
-    }
 
-    &.closed {
       .overlay {
-        display: none;
-      }
-
-      .sidebar {
-        left: -250px;
+        display: block;
       }
     }
   }

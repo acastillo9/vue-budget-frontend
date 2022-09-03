@@ -4,10 +4,13 @@ import { useAuthStore } from "@/stores/auth";
 
 const username = ref("");
 const password = ref("");
+const error = ref("");
 
 function signIn() {
   const authStore = useAuthStore();
-  authStore.login(username.value, password.value);
+  authStore.login(username.value, password.value).catch((errorMessage) => {
+    error.value = errorMessage;
+  });
 }
 </script>
 
@@ -16,6 +19,20 @@ function signIn() {
     <div class="card">
       <div class="card-body">
         <h1>Budget</h1>
+        <div
+          v-if="error"
+          class="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          {{ error }}
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+            @click="() => (error = '')"
+          ></button>
+        </div>
         <form @submit.prevent="signIn">
           <div class="mb-3">
             <label for="username" class="form-label">Username</label>

@@ -20,10 +20,19 @@ export const useAuthStore = defineStore({
   }),
   actions: {
     async login(username: string, password: string) {
-      const user = await fetch.post(`${baseUrl}/login`, {
-        username,
-        password,
-      });
+      let user;
+      try {
+        user = await fetch.post(`${baseUrl}/login`, {
+          username,
+          password,
+        });
+      } catch (e) {
+        user = null;
+      }
+
+      if (!user) {
+        return Promise.reject("Incorrect username or password");
+      }
 
       // update pinia state
       this.user = user;
