@@ -73,8 +73,8 @@ findUser();
         </li>
       </ul>
     </div>
-    <div class="content vh-100 flex-grow-1">
-      <header>
+    <div class="content flex-grow-1 h-100">
+      <header class="sticky-top">
         <nav class="navbar">
           <div class="container-fluid">
             <button
@@ -128,7 +128,7 @@ findUser();
   .sidebar {
     background-color: #273469;
     box-shadow: 2px 0px 4px #30343f20;
-    z-index: 1;
+    z-index: 10000;
     transition: all 0.1s ease-out;
     width: 250px;
 
@@ -165,6 +165,7 @@ findUser();
 
   .content {
     background-color: #fafaff;
+    overflow: scroll;
 
     header {
       .navbar {
@@ -262,7 +263,7 @@ findUser();
       width: 100vw;
       height: 100vh;
       background-color: #00000040;
-      z-index: 1;
+      z-index: 10000;
       display: none;
     }
 

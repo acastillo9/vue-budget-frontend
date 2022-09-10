@@ -4,6 +4,7 @@ import AppLayout from "@/layouts/AppLayout/AppLayout.vue";
 </script>
 
 <template>
+  <ToastsContainer />
   <AppLayout>
     <RouterView />
   </AppLayout>

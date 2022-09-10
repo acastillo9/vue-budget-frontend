@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, inject } from "vue";
 import { getTransactionTypes, save } from "@/api/transactions/transactions.api";
 import TransactionType from "@/api/transactions/transaction-type";
+import type Toaster from "@/helpers/toast";
 
+const toast = inject<Toaster>("toast");
 const transactionTypes = ref<TransactionType[]>([]);
 const transactionType = ref("");
 const description = ref("");
 const amount = ref("");
 const date = ref(null);
+const emit = defineEmits(["transactionSaved"]);
 
 onMounted(() => {
   getTransactionTypes().then((response: TransactionType[]) => {
@@ -27,6 +30,8 @@ async function saveTransaction() {
   description.value = "";
   amount.value = "";
   date.value = null;
+  toast.success("Transaction saved");
+  emit("transactionSaved");
 }
 </script>
 

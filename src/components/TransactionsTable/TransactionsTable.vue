@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, defineEmits } from "vue";
 import { find, remove } from "@/api/transactions/transactions.api";
 import Transaction from "@/api/transactions/transaction";
 import { formatCurrency } from "@/helpers/formatter";
 
 const transactions = ref<Transaction[]>([]);
+const emit = defineEmits(["transactionDeleted"]);
 
 async function findTransactions() {
   transactions.value = await find();
@@ -13,7 +14,17 @@ findTransactions();
 
 async function deleteTransaction(id: string) {
   await remove(id);
+  refresh();
+  emit("transactionDeleted");
 }
+
+function refresh() {
+  findTransactions();
+}
+
+defineExpose({
+  refresh,
+});
 </script>
 
 <template>

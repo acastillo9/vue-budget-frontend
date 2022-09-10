@@ -19,6 +19,6 @@ export const remove = async (transactionId: string) => {
   return fetch.remove(`${BASE_URL}/${transactionId}`);
 };
 
-export const getBalance = async () => {
-  return fetch.get(`${BASE_URL}/balance`);
+export const getBalance = async (): Promise<number> => {
+  return fetch.get<number>(`${BASE_URL}/balance`);
 };

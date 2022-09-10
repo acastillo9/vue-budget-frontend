@@ -9,8 +9,17 @@ const formatedBalance = computed(() => {
   return formatCurrency(balance.value);
 });
 
-getBalance().then((balanceResponse) => {
-  balance.value = balanceResponse;
+async function getBalanceFromBack() {
+  balance.value = await getBalance();
+}
+getBalanceFromBack();
+
+function refresh() {
+  getBalanceFromBack();
+}
+
+defineExpose({
+  refresh,
 });
 </script>
 
