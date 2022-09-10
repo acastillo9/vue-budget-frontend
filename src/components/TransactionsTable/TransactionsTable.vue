@@ -2,7 +2,7 @@
 import { ref, defineEmits } from "vue";
 import { find, remove } from "@/api/transactions/transactions.api";
 import Transaction from "@/api/transactions/transaction";
-import { formatCurrency } from "@/helpers/formatter";
+import { formatCurrency, formatDate } from "@/helpers/formatter";
 
 const transactions = ref<Transaction[]>([]);
 const emit = defineEmits(["transactionDeleted"]);
@@ -37,6 +37,7 @@ defineExpose({
             <tr>
               <th scope="col">Amount</th>
               <th scope="col">Description</th>
+              <th scope="col">Date</th>
               <th scope="col"></th>
             </tr>
           </thead>
@@ -54,6 +55,7 @@ defineExpose({
                 {{ formatCurrency(transaction.amount) }}
               </td>
               <td>{{ transaction.description }}</td>
+              <td>{{ formatDate(transaction.date) }}</td>
               <td>
                 <ul class="d-flex">
                   <li>

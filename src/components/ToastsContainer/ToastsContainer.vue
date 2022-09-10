@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject, ref } from "vue";
-import type { ToastMessage, Toaster } from "@/helpers/toast";
+import type { ToastMessage, Toaster } from "@/plugins/toast";
 
 type ToastData = ToastMessage & {
   animateFn(timestamp: number): void;

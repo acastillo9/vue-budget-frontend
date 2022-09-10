@@ -2,7 +2,7 @@
 import { ref, onMounted, inject } from "vue";
 import { getTransactionTypes, save } from "@/api/transactions/transactions.api";
 import TransactionType from "@/api/transactions/transaction-type";
-import type Toaster from "@/helpers/toast";
+import type Toaster from "@/plugins/toast";
 
 const toast = inject<Toaster>("toast");
 const transactionTypes = ref<TransactionType[]>([]);
@@ -78,6 +78,13 @@ async function saveTransaction() {
           <label for="amount">Amount</label>
         </div>
         <div class="form-floating mb-3">
+          <date-picker
+            v-model="date"
+            placeholder="date"
+            :enableTimePicker="false"
+            inputClassName="py-3"
+          />
+          <!--
           <input
             type="date"
             class="form-control"
@@ -85,7 +92,8 @@ async function saveTransaction() {
             placeholder="Transaction date"
             v-model="date"
           />
-          <label for="date">Date</label>
+          -->
+          <!-- <label for="date">Date</label> -->
         </div>
         <button type="submit" class="btn btn-primary">Save</button>
       </form>
